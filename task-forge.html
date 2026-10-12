@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskForge</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <h1>TaskForge</h1>
+  <input id="search" type="search" placeholder="Search tasks">
+  <button id="themeBtn">Dark mode</button>
+  <button id="addTaskBtn" class="primary">Add Task</button>
+</header>
+
+<main>
+  <section id="stats" class="stats">
+    <div>
+      <p style="font-size: 30px; font-weight: bold;" id="statTotal">0</p>
+      <span>Total Tasks</span>
+    </div>
+    <div>
+      <p style="font-size: 30px; font-weight: bold;" id="statDone">0</p>
+      <span>Completed Tasks</span>
+    </div>
+    <div>
+      <p style="font-size: 30px; font-weight: bold;" id="statPending">0</p>
+      <span>Pending Tasks</span>
+    </div>
+    <div>
+      <p style="font-size: 30px; font-weight: bold;" id="statOverdue">0</p>
+      <span>Overdue Tasks</span>
+    </div>
+  </section>
+
+  <section class="filters">
+    <label>Status
+      <select id="fStatus">
+        <option value="all">All</option>
+        <option value="completed">Completed</option>
+        <option value="pending">Pending</option>
+        <option value="overdue">Overdue</option>
+      </select>
+    </label>
+    
+    <label>Priority
+      <select id="fPriority">
+        <option value="all">All</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+    </label>
+
+    <label>Category
+      <select id="fCategory">
+        <option value="all">All</option>
+        <option value="work">Work</option>
+        <option value="personal">Personal</option>
+        <option value="school">School</option>
+        <option value="backend">Backend</option>
+        <option value="frontend">Frontend</option>
+        <option value="fintech">Fintech</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+
+    <label>Sort by
+      <select id="fSort">
+        <option value="all">All</option>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="A-Z">A - Z</option>
+        <option value="Z-A">Z - A</option>
+        <option value="highestPriority">Highest Priority</option>
+        <option value="lowestPriority">Lowest Priority</option>
+        <option value="closestDueDate">Closest Due Date</option>
+        <option value="furthestDueDate">Furthest Due Date</option>
+      </select>
+    </label>
+  </section>
+
+  <div class="bulk" id="bulkBar">
+    <label>
+      <input type="checkbox" id="selectAll"> Select all
+    </label>
+    <span id="selCount">0 selected</span>
+    <button data-bulk="complete">Mark completed</button>
+    <button data-bulk="pending">Mark pending</button>
+    <button data-bulk="delete" class="danger">Delete selected</button>
+  </div>
+
+  <ul id="taskList"></ul>
+  <div id="empty" hidden></div>
+</main>
+
+<template id="taskTemplate">
+  <li class="task">
+    <input type="checkbox" class="sel">
+    <div class="body">
+      <h3 class="t-title"></h3>
+      <p class="t-desc"></p>
+      <div class="meta">
+        <span class="chip cat"></span>
+        <span class="chip pri"></span>
+        <span class="chip status"></span>
+        <span class="due"></span>
+        <span class="created"></span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button data-action="complete">Complete</button>
+      <button data-action="edit">Edit</button>
+      <button data-action="delete" class="danger">Delete</button>
+    </div>
+  </li>
+</template>
+
+<div class="modal" id="formModal" hidden><div class="dialog">
+  <form id="taskForm" novalidate>
+    <h2 id="formTitle">New task</h2>
+    <label class="field">Title
+      <input name="title" maxlength="80" minlength="3" required><small class="error"></small>
+    </label>
+    <label class="field">Description
+      <textarea name="description" rows="3" minlength="10" required></textarea>
+      <small class="error"></small>
+    </label>
+    <label class="field">Category
+      <select name="category" required>
+        <option value="">Select...</option>
+        <option value="work">Work</option>
+        <option value="personal">Personal</option>
+        <option value="school">School</option>
+        <option value="backend">Backend</option>
+        <option value="frontend">Frontend</option>
+        <option value="fintech">Fintech</option>
+        <option value="other">Other</option>
+      </select><small class="error"></small>
+    </label>
+    <label class="field">Priority
+      <select name="priority" required>
+        <option value="">Select...</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select><small class="error"></small>
+   </label>
+    <label class="field">Due date<input type="date" name="due" required><small class="error"></small>
+    </label>
+    <div class="row">
+      <button type="button" data-close>Cancel</button>
+      <button type="submit" id="saveBtn" class="primary">Add task</button>
+    </div>
+  </form>
+</div></div>
+
+<div class="modal" id="detailsModal" hidden><div class="dialog">
+  <h2 id="dTitle"></h2>
+  <p id="dDesc"></p>
+  <dl>
+    <dt>Category</dt><dd id="dCategory"></dd>
+    <dt>Priority</dt><dd id="dPriority"></dd>
+    <dt>Status</dt><dd id="dStatus"></dd>
+    <dt>Due date</dt><dd id="dDue"></dd>
+    <dt>Created</dt><dd id="dCreated"></dd>
+  </dl>
+  <div class="row"><button data-detail="delete" class="danger">Delete</button><button data-detail="edit">Edit</button><button data-close>Close</button></div>
+</div></div>
+
+<div class="modal" id="confirmModal" hidden><div class="dialog">
+  <p id="confirmMsg"></p>
+  <div class="row"><button data-close>Cancel</button><button id="confirmYes" class="primary">Confirm</button></div>
+</div></div>
+
+<div id="toasts" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
