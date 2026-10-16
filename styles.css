@@ -198,6 +198,9 @@ main {
   color: var(--mute);
 }
 
+.task.overdue { border-left: 4px solid #dc2626; }
+.task.overdue .status { background: #fee2e2; color: #b91c1c; }
+
 .chip {
   padding: 0.1rem 0.5rem;
   border-radius: 6px;
